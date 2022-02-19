@@ -10,127 +10,78 @@ using Npgsql;
 using Microsoft.Extensions.Configuration;
 
 
+
 namespace REST_App.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class FacultiesController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-
-        public FacultiesController(IConfiguration configuration)
+        CollegeContext db;
+  
+        public FacultiesController(CollegeContext context)
         {
-            _configuration = configuration;
+            db = context;
+            if (!db.faculty.Any())
+            {
+                db.faculty.Add(new Faculty { id = 1, name_of_faculty = "Techical", head_of_faculty = "Mr. Root"});
+                db.faculty.Add(new Faculty { id = 2, name_of_faculty = "Art", head_of_faculty = "Mrs. Wolf"});
+                db.SaveChanges();
+            }
         }
+
 
         // GET: api/faculties
         [HttpGet]
-        public JsonResult Get()
+        public async Task<ActionResult<IEnumerable<Faculty>>> Get()
         {
-            string sqlDataSource = _configuration.GetConnectionString("StudentAppCon");
-            string query = @"select * from faculty";
-
-            DataTable table = new DataTable();
-            NpgsqlDataReader myReader;
-
-            using (NpgsqlConnection myCon = new NpgsqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (NpgsqlCommand myCommand = new NpgsqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-            return new JsonResult(table);
-        }
+            return await db.faculty.ToListAsync();
+        } 
 
         // POST api/faculties
         [HttpPost]
-        public JsonResult Post(Faculty fac)
+        public async Task<ActionResult<Faculty>> Post(Faculty fac)
         {
-            string sqlDataSource = _configuration.GetConnectionString("StudentAppCon");
-            string query = @"insert into faculty values (@id,@name,@head)";
-
-            DataTable table = new DataTable();
-            NpgsqlDataReader myReader;
-
-            using (NpgsqlConnection myCon = new NpgsqlConnection(sqlDataSource))
+            if (fac == null)
             {
-                myCon.Open();
-                using (NpgsqlCommand myCommand = new NpgsqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@id", fac.Id);
-                    myCommand.Parameters.AddWithValue("@name", fac.Name);
-                    myCommand.Parameters.AddWithValue("@head", fac.Head);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-
-                    myReader.Close();
-                    myCon.Close();
-                }
+                return BadRequest();
             }
-            return new JsonResult("Added successfully");
-        }
 
+            db.faculty.Add(fac);
+            await db.SaveChangesAsync();
+            return Ok(fac);
+        }
+ 
         // PUT api/students
         [HttpPut]
-        public JsonResult Put(Faculty fac)
+        public async Task<ActionResult<Faculty>> Put(Faculty fac)
         {
-            string sqlDataSource = _configuration.GetConnectionString("StudentAppCon");
-            string query = @"update faculty 
-                        set name_of_faculty=@name,head_of_faculty=@head
-                        where id=@id";
-
-            DataTable table = new DataTable();
-            NpgsqlDataReader myReader;
-
-            using (NpgsqlConnection myCon = new NpgsqlConnection(sqlDataSource))
+            if (fac == null)
             {
-                myCon.Open();
-                using (NpgsqlCommand myCommand = new NpgsqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@id", fac.Id);
-                    myCommand.Parameters.AddWithValue("@name", fac.Name);
-                    myCommand.Parameters.AddWithValue("@head", fac.Head);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-
-                    myReader.Close();
-                    myCon.Close();
-                }
+                return BadRequest();
             }
-            return new JsonResult("Updated successfully");
+            if (!db.faculty.Any(x => x.id == fac.id))
+            {
+                return NotFound();
+            }
+
+            db.Update(fac);
+            await db.SaveChangesAsync();
+            return Ok(fac);
         }
 
         // Delete api/students/5
         [HttpDelete("{id}")]
-        public JsonResult Delete(int id)
+        public async Task<ActionResult<Faculty>> Delete(int id)
         {
-            string sqlDataSource = _configuration.GetConnectionString("StudentAppCon");
-            string query = @"delete from faculty 
-                        where id=@id";
-
-            DataTable table = new DataTable();
-            NpgsqlDataReader myReader;
-
-            using (NpgsqlConnection myCon = new NpgsqlConnection(sqlDataSource))
+            Faculty fac = db.faculty.FirstOrDefault(x => x.id == id);
+            if (fac == null)
             {
-                myCon.Open();
-                using (NpgsqlCommand myCommand = new NpgsqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@id", id);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-
-                    myReader.Close();
-                    myCon.Close();
-                }
+                return NotFound();
             }
-            return new JsonResult("Delete successfully");
+            db.faculty.Remove(fac);
+            await db.SaveChangesAsync();
+            return Ok(fac);
         }
     }
 }

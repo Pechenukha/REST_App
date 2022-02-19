@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dns\\source\\repos\\REST_App\\REST_App\\REST_App.csproj": {}
+    "C:\\Users\\dns\\OneDrive\\Рабочий стол\\REST_AppClone\\REST_App\\REST_App\\REST_App.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dns\\source\\repos\\REST_App\\REST_App\\REST_App.csproj": {
+    "C:\\Users\\dns\\OneDrive\\Рабочий стол\\REST_AppClone\\REST_App\\REST_App\\REST_App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dns\\source\\repos\\REST_App\\REST_App\\REST_App.csproj",
+        "projectUniqueName": "C:\\Users\\dns\\OneDrive\\Рабочий стол\\REST_AppClone\\REST_App\\REST_App\\REST_App.csproj",
         "projectName": "REST_App",
-        "projectPath": "C:\\Users\\dns\\source\\repos\\REST_App\\REST_App\\REST_App.csproj",
+        "projectPath": "C:\\Users\\dns\\OneDrive\\Рабочий стол\\REST_AppClone\\REST_App\\REST_App\\REST_App.csproj",
         "packagesPath": "C:\\Users\\dns\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dns\\source\\repos\\REST_App\\REST_App\\obj\\",
+        "outputPath": "C:\\Users\\dns\\OneDrive\\Рабочий стол\\REST_AppClone\\REST_App\\REST_App\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\dns\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -48,6 +48,12 @@
               "target": "Package",
               "version": "[5.0.14, )"
             },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.14, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[5.0.10, )"
@@ -55,6 +61,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[5.0.0, )"
             }
           },
           "imports": [

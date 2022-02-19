@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 
 namespace REST_App.Models
 {
-    public class Faculty
+    public class Group
     {
         public int id { get; set; }
-        public string name_of_faculty { get; set; }
-        public string head_of_faculty { get; set; }
+        public string number_of_group { get; set; }
+        public string curator { get; set; }
 
         //Navigation Properties
-        public List<Student> student { get; set; }
+        public List<StudentInGroup> student_in_group { get; set; }
+
     }
 }

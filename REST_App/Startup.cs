@@ -11,24 +11,23 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using REST_App.Models;
 using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 
 namespace REST_App
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+        
         public void ConfigureServices(IServiceCollection services)
         {
-           
-            //Enable CORS 
-            services.AddCors(c =>
-            {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
 
-            //JSON Serializer
-            services.AddControllersWithViews().AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
-                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+            services.AddDbContext<CollegeContext>(options => options.UseNpgsql(_configuration.GetConnectionString("StudentAppCon")));
 
             services.AddControllers(); 
 
@@ -38,22 +37,19 @@ namespace REST_App
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-            //Enable CORS 
-            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            
             app.UseSwagger();
             app.UseSwaggerUI(config =>
             {
                 config.RoutePrefix = string.Empty;
                 config.SwaggerEndpoint("swagger/v1/swagger.json", "Notes API");
             });
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
